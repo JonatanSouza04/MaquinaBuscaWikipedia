@@ -37,7 +37,19 @@ class WikipediaEngine implements EngineInterface
         $url = sprintf(self::URI, $term);
         $response = $this->client->request('GET', $url);
 
-        return $this->parser->parse($response->getContent());
+        $response = $response->getContent();
+
+        $pos = strpos($response, 'não produziu resultados');
+    
+        if($pos)
+        {
+         
+            $empty = new \App\Result(0,[]);
+
+            return $empty;
+        }
+        else
+         return $this->parser->parse($response);
     }
 
     public static function getName(): String

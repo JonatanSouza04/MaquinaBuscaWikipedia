@@ -10,7 +10,10 @@ class WikipediaParser
 {
     public function parse(string $content): Result
     {
+
+       try{ 
         $crawler = new Crawler($content);
+
         $count = (int) $crawler->filter('.results-info')->attr('data-mw-num-results-total');
 
         $items = [];
@@ -28,5 +31,9 @@ class WikipediaParser
         }
 
         return new Result($count, $items);
+
+    } catch(Excpetion $e){
+        return [];
+    }
     }
 }

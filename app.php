@@ -30,14 +30,27 @@ class SearchCommand extends Command
     {
         $wikipedia = new WikipediaEngine(new WikipediaParser(), HttpClient::create());
 
+       try{ 
         $result = $wikipedia->search($input->getArgument('name'));
+
+
+        if(count($result) === 0)
+        {
+            $output->writeln("<fg=red>". str_pad("",198,"=")."</>");
+            $output->writeln("<fg=red>". " Nenhum resultado encontrado para o termo '".$input->getArgument('name')."' no 'wikipedia'</>");
+            $output->writeln("<fg=red>". str_pad("",198,"=")."</>");
+            return 0;  
+       }
+   
+       }catch(Exceptio $e){
+        return 0;  
+       }
 
         $output->writeln("<fg=yellow>". str_pad("",198,"=")."</>");
         $output->writeln("<fg=yellow>". $result->count() . " resultados encontrado(s) para o termo '".$input->getArgument('name')."' no 'wikipedia'</>");
         $output->writeln("<fg=yellow>". str_pad("",198,"=")."</>");
 
         $output->writeln("Mostrando primeiro ". $result->countItemsOnPage() . " resultado(s):");
-
 
         foreach($result as $resultItem){
                 $rows[] = [$resultItem->getTitle(), $resultItem->getPreview()];
